@@ -3,6 +3,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalTime;
 import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.Mockito;
+import java.util.ArrayList;
+import java.util.List;
 
 class RestaurantTest {
     Restaurant restaurant;
@@ -95,4 +97,22 @@ class RestaurantTest {
                 ()->restaurant.removeFromMenu("French fries"));
     }
     //<<<<<<<<<<<<<<<<<<<<<<<MENU>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+    //<<<<<<<<<<<<<<<<<<<<<<<ORDER-TOTAL>>>>>>>>>>>>>>>>>>>>>>
+
+        @Test
+        public void selected_items_should_return_total_value(){
+            List<String> selectedItems = new ArrayList<String>();
+            selectedItems.add("Sweet corn soup");
+            selectedItems.add("Vegetable lasagne");
+            assertEquals(119+269,restaurant.getOrderTotal(selectedItems));
+        }
+
+        @Test
+        public void nothing_selected_should_return_total_zero(){
+            List<String> selectedItems = new ArrayList<String>();
+            assertEquals(0,restaurant.getOrderTotal(selectedItems));
+        }
+    //<<<<<<<<<<<<<<<<<<<<<<<ORDER-TOTAL>>>>>>>>>>>>>>>>>>>>>>
 }
