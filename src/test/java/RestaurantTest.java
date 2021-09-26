@@ -1,25 +1,58 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalTime;
-
 import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.Mockito;
 
 class RestaurantTest {
     Restaurant restaurant;
-    //REFACTOR ALL THE REPEATED LINES OF CODE
+    LocalTime openingTime;
+    LocalTime closingTime;
+
+    Restaurant spyRestaurant;
+
+    @BeforeEach
+    public void openingTimeArrange(){
+        openingTime = LocalTime.parse("10:00:00");
+        closingTime = LocalTime.parse("21:30:00");
+        restaurant = new RestaurantService().addRestaurant("Amelie's cafe", "Chennai", openingTime, closingTime);
+        restaurant.addToMenu("Sweet corn soup", 119);
+        restaurant.addToMenu("Vegetable lasagne", 269);
+
+        spyRestaurant = Mockito.spy(restaurant);
+    }
+
 
     //>>>>>>>>>>>>>>>>>>>>>>>>>OPEN/CLOSED<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     //-------FOR THE 2 TESTS BELOW, YOU MAY USE THE CONCEPT OF MOCKING, IF YOU RUN INTO ANY TROUBLE
     @Test
     public void is_restaurant_open_should_return_true_if_time_is_between_opening_and_closing_time(){
-        //WRITE UNIT TEST CASE HERE
+        //date within range
+        LocalTime dateWithinRange = LocalTime.of(11,12,34);
+        //edge case opening date
+        LocalTime dateOpeningEdge = LocalTime.of(10,00,00);
+
+        //mock current time
+        Mockito.when(spyRestaurant.getCurrentTime()).thenReturn(dateWithinRange, dateOpeningEdge);
+
+        //assert true
+        assertTrue(spyRestaurant.isRestaurantOpen());
     }
 
     @Test
     public void is_restaurant_open_should_return_false_if_time_is_outside_opening_and_closing_time(){
-        //WRITE UNIT TEST CASE HERE
+        //date outside range before time
+        LocalTime dateOutsideRangeBefore = LocalTime.of(9,12,02);
+        //date outside range after time
+        LocalTime dateOutsideRangeAfter = LocalTime.of(22,32,42);
+        //edge case closing date
+        LocalTime dateClosingDate = LocalTime.of(21,30,00);
 
+        //mock current time
+        Mockito.when(spyRestaurant.getCurrentTime()).thenReturn(dateOutsideRangeAfter, dateOutsideRangeAfter, dateClosingDate);
+
+        //assert false
+        assertFalse(spyRestaurant.isRestaurantOpen());
     }
 
     //<<<<<<<<<<<<<<<<<<<<<<<<<OPEN/CLOSED>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
